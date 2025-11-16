@@ -6,6 +6,7 @@ import { mapToUserDto } from '../utilis/mappers/user.mapper';
 import { HttpException } from "../utilis/http-exception";
 import { StatusCodes } from "http-status-codes";
 import { Organization } from "../database/models/organization.model";
+import { orderService } from "./order.service";
 
 class UserService {
   public async getPaginatedUsers(page: number, limit: number): Promise<UserDto[]> {
@@ -63,6 +64,15 @@ class UserService {
 
     if (!user) {
       throw new HttpException(StatusCodes.NOT_FOUND, "User not found");
+    }
+
+    const hasOrder = await orderService.userHasOrder(id);
+
+    // Based on domain model
+    // > The `userId` and `organizationId` values must reference valid records.
+    if (hasOrder) {
+      // or soft delete
+      throw new HttpException(StatusCodes.BAD_REQUEST, "Can't remove user with orders!");
     }
 
     await user.destroy();

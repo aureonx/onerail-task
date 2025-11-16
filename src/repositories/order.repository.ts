@@ -16,6 +16,10 @@ class OrderRepository {
     return Order.findByPk(id);
   }
 
+  public async findOneByUserId(userId: number): Promise<Order | null> {
+    return Order.findOne({ where: { userId } })
+  }
+
   public async findByIdWithRelations(id: number): Promise<Order | null> {
     return Order.findByPk(id, { include: [User, Organization] });
   }

@@ -1,14 +1,17 @@
 import { StatusCodes } from "http-status-codes";
 import { OrderCreationAttributes } from "../database/models/order.model";
-import { HttpException } from "../utilis/http-exception";
-import { orderRepository } from "../repositories/order.repository";
 import { OrderDto } from "../dtos/order.dto";
-import { mapToOrderDto, mapToOrderExtendedDto } from "../utilis/mappers/order.mapper";
-import { userRepository } from "../repositories/user.repository";
-import da from "zod/v4/locales/da.js";
+import { orderRepository } from "../repositories/order.repository";
 import { organizationRepository } from "../repositories/organization.repository";
+import { userRepository } from "../repositories/user.repository";
+import { HttpException } from "../utilis/http-exception";
+import { mapToOrderDto, mapToOrderExtendedDto } from "../utilis/mappers/order.mapper";
 
 class OrderService {
+  public async userHasOrder(userId: number): Promise<boolean> {
+    return !!await orderRepository.findOneByUserId(userId);
+  }
+
   public async getPaginatedOranizations(page: number, limit: number): Promise<OrderDto[]> {
     const orders = await orderRepository.findAllPaginated(page, limit);
     return orders.map(mapToOrderDto);

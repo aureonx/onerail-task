@@ -5,6 +5,8 @@ import router from './routes';
 import { logger } from './config/logger';
 import { HttpException } from './utilis/http-exception';
 import { loggerMiddleware } from './middleware/logger.middleware';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './swagger';
 
 bootstrap();
 
@@ -15,7 +17,8 @@ async function bootstrap() {
     await sequelize.authenticate();
     logger.info('Database connected');
   } catch (err) {
-    logger.error('Unable to connect to DB:', err);
+    logger.error('Unable to connect to DB:');
+    logger.error(err);
     process.exit(1);
   }
 
@@ -23,14 +26,7 @@ async function bootstrap() {
   app.use(express.urlencoded({ extended: true }));
   app.use(loggerMiddleware);
 
-  const swaggerSpec = {
-    openapi: '3.0.0',
-    info: {
-      title: 'Server-node Exercise API',
-      version: '1.0.0',
-    },
-    paths: {},
-  };
+  app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
   app.get('/health', (req: Request, res: Response) => {
     res.status(200).json({ status: 'UP' });
