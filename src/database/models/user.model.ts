@@ -14,7 +14,7 @@ import {
 } from 'sequelize-typescript';
 import { Organization } from './organization.model';
 import { Order } from './order.model';
-import { CreationOptional, InferAttributes, InferCreationAttributes, NonAttribute } from 'sequelize';
+import type { CreationOptional, InferAttributes, InferCreationAttributes, NonAttribute } from 'sequelize';
 import { logger } from '../../config/logger';
 
 export interface UserCreationAttributes {

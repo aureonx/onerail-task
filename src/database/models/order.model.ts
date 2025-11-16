@@ -10,7 +10,7 @@ import {
 } from 'sequelize-typescript';
 import { User } from './user.model';
 import { Organization } from './organization.model';
-import { CreationOptional, InferAttributes, NonAttribute } from 'sequelize';
+import type { CreationOptional, InferAttributes, NonAttribute } from 'sequelize';
 
 export interface OrderCreationAttributes {
   totalAmount: number;

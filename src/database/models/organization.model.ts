@@ -12,7 +12,7 @@ import {
 } from 'sequelize-typescript';
 import { User } from './user.model';
 import { Order } from './order.model';
-import { CreationOptional, InferAttributes, NonAttribute } from 'sequelize';
+import type { CreationOptional, InferAttributes, NonAttribute } from 'sequelize';
 import { logger } from '../../config/logger';
 
 export interface OrganizationCreationAttributes {

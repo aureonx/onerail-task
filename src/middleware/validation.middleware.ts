@@ -1,6 +1,5 @@
-import { Request, Response, NextFunction, RequestHandler } from 'express';
-import z, { ZodObject, ZodError, ZodSchema, ZodTypeAny } from 'zod';
-import { AnyZodObject, ZodEffects } from 'zod/v3';
+import { Request, RequestHandler } from 'express';
+import z, { ZodObject, ZodTypeAny } from 'zod';
 
 export interface ValidatedRequest<T extends ZodObject<any>>
   extends Request {
@@ -8,8 +7,6 @@ export interface ValidatedRequest<T extends ZodObject<any>>
   validatedQuery: z.infer<T>["query"];
   validatedBody: z.infer<T>["body"];
 }
-
-
 
 export type RequestSchema = ZodObject<{
   params?: ZodTypeAny;
