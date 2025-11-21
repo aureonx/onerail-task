@@ -55,8 +55,7 @@ async function bootstrap() {
       });
     }
 
-
-    return res.status(400).json({ status: 500, error: "Internal error" });
+    return res.status(500).json({ status: 500, error: "Internal error" });
   });
 
   const PORT = process.env.PORT || 3000;

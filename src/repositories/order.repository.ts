@@ -28,6 +28,11 @@ class OrderRepository {
     return Order.create(data);
   }
 
+  public async bulkCreate(data: OrderCreationAttributes[]): Promise<Order[]> {
+    return Order.bulkCreate(data);
+  }
+
+
   public async update(id: number, data: Partial<OrderCreationAttributes>): Promise<[number, Order[]]> {
     return Order.update(data, {
       where: { id },

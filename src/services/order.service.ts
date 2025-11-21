@@ -23,6 +23,64 @@ class OrderService {
     return order ? mapToOrderExtendedDto(order) : null;
   }
 
+
+  public async createBulkOrder(data: OrderCreationAttributes[]): Promise<any> {
+    const order = data.find((value) => value.organizationId);
+
+    if (!order) {
+      throw new HttpException(StatusCodes.BAD_REQUEST, "No orders provided");
+    }
+
+    const organizationId = order.organizationId;
+
+    const isDifferent = data.some((value) => value.organizationId !== organizationId);
+
+    if (isDifferent) {
+      throw new HttpException(StatusCodes.BAD_REQUEST, "All orders must belong to the same organization");
+    }
+
+    const organizationExist = await organizationRepository.findById(organizationId);
+
+    if (!organizationExist) {
+      throw new HttpException(StatusCodes.NOT_FOUND, "Organization not found");
+    }
+
+    const usersId: number[] = []
+
+    for (const order of data) {
+      if (!usersId.includes(order.userId)) {
+        usersId.push(order.userId);
+      }
+    }
+
+    const users = await userRepository.findAllById(usersId);
+
+    if (!users || users.length === 0 || users.length !== usersId.length) {
+      throw new HttpException(StatusCodes.NOT_FOUND, "Users not found");
+    }
+
+    const validUser = users.every((user) => user.organizationId === organizationId);
+
+    if (!validUser) {
+      throw new HttpException(StatusCodes.BAD_REQUEST, "Users do not belong to the organization");
+    }
+
+    let ordersTotalAmount = 0;
+
+    data.forEach((order) => ordersTotalAmount += order.totalAmount);
+
+    const orderAmountLimit = 10000;
+
+    if (ordersTotalAmount > orderAmountLimit) {
+      throw new HttpException(StatusCodes.BAD_REQUEST, `Total amount of all orders exceeds the limit of ${orderAmountLimit}`);
+    }
+
+    const newOrder = await orderRepository.bulkCreate(data);
+
+    return newOrder.map((value) => mapToOrderDto(value));
+  }
+
+
   public async createOrder(data: OrderCreationAttributes): Promise<OrderDto> {
     const userExist = await userRepository.findById(data.userId);
 

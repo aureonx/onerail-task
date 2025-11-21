@@ -13,14 +13,21 @@ const pastDateValidator = z
   }, 'Date must be in the past')
   .transform((val) => DateTime.fromISO(val).toJSDate());
 
+
+const orderSchema = z.object({
+  totalAmount: z
+    .number()
+    .positive('totalAmount must be greater than 0'),
+  userId: z.number().int().positive(),
+  organizationId: z.number().int().positive(),
+})
+
+export const createBulkOrdersSchema = z.object({
+  body: z.array(orderSchema).min(1, 'At least one order must be provided'),
+});
+
 export const createOrderSchema = z.object({
-  body: z.object({
-    totalAmount: z
-      .number()
-      .positive('totalAmount must be greater than 0'),
-    userId: z.number().int().positive(),
-    organizationId: z.number().int().positive(),
-  }),
+  body: orderSchema,
 });
 
 export const updateOrderSchema = z.object({

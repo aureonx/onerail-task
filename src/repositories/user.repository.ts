@@ -18,6 +18,11 @@ class UserRepository {
     return User.findByPk(id);
   }
 
+  public async findAllById(id: number[]): Promise<User[] | null> {
+    return User.findAll({ where: { id } });
+  }
+
+
   public async create(userData: UserCreationAttributes): Promise<User> {
     return User.create(userData);
   }

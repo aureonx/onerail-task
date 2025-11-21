@@ -26,6 +26,14 @@ class UserService {
       throw new HttpException(StatusCodes.BAD_REQUEST, `Organization with id ${userData.organizationId} does not exist`);
     }
 
+
+    const findUser = await userRepository.findByEmail(userData.email);
+
+    if (findUser) {
+      throw new HttpException(StatusCodes.BAD_REQUEST, `User with provided email already exist`);
+    }
+
+
     const password = await hash(userData.password, 12);
 
     const newUser = await userRepository.create({

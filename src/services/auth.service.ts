@@ -21,7 +21,7 @@ class AuthService {
     const JWT_SECRET = process.env.JWT_SECRET || "jwt-secret";
     const JWT_EXPIRES_IN = parseInt(process.env.JWT_EXPIRES_IN || "900");
 
-    const payload = { userId: findUser.id };
+    const payload = { userId: findUser.id, organizationId: findUser.organizationId };
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 

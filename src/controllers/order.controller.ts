@@ -5,7 +5,7 @@ import { HttpException } from '../utilis/http-exception';
 import { paginationSchema } from '../validators/pagination.validator';
 import { paramIdSchema } from '../validators/param-id.validator';
 import { orderService } from '../services/order.service';
-import { createOrderSchema, updateOrderSchema } from '../validators/order.validator';
+import { createBulkOrdersSchema, createOrderSchema, updateOrderSchema } from '../validators/order.validator';
 
 class OrderController {
   async getAll(req: ValidatedRequest<typeof paginationSchema>, res: Response): Promise<void> {
@@ -29,6 +29,12 @@ class OrderController {
     }
 
     res.status(StatusCodes.OK).json(order);
+  }
+
+  async createBulk(req: ValidatedRequest<typeof createBulkOrdersSchema>, res: Response): Promise<void> {
+    const newOrder = await orderService.createBulkOrder(req.validatedBody);
+
+    res.status(StatusCodes.CREATED).json(newOrder);
   }
 
   async create(req: ValidatedRequest<typeof createOrderSchema>, res: Response): Promise<void> {
